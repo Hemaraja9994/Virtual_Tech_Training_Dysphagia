@@ -115,10 +115,10 @@ function SourceBtn({ label, icon, active, onClick }) {
 function Slider({ label, min, max, step, value, onChange, format, accent }) {
   return (
     <label className="block">
-      <div className="flex items-center justify-between mb-1.5">
-        <span className="text-xs font-semibold text-clinical-ink2">{label}</span>
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-sm font-semibold text-clinical-ink2">{label}</span>
         <span
-          className={`font-mono tabular-nums text-xs px-2 py-0.5 rounded-md border ${
+          className={`font-mono tabular-nums text-base font-semibold px-3 py-1 rounded-md border ${
             accent === "ok"
               ? "text-emerald-700 bg-emerald-50 border-emerald-200"
               : "text-brand-700 bg-brand-50 border-brand-100"
@@ -140,10 +140,10 @@ function Slider({ label, min, max, step, value, onChange, format, accent }) {
 
 function Counter({ swallows }) {
   return (
-    <div className="mt-3 inline-flex items-center gap-2 text-xs text-clinical-muted">
-      <span className="h-1.5 w-1.5 rounded-full bg-signal-ok" />
+    <div className="mt-4 inline-flex items-center gap-2 text-sm text-clinical-muted">
+      <span className="h-2 w-2 rounded-full bg-signal-ok" />
       Successful swallows
-      <span className="font-mono tabular-nums text-clinical-ink font-semibold">
+      <span className="font-mono tabular-nums text-clinical-ink font-bold text-lg">
         {swallows}
       </span>
     </div>

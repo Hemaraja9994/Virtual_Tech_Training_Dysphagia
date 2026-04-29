@@ -33,9 +33,9 @@ export default {
         mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"]
       },
       fontSize: {
-        "clinical-sm":   ["0.9375rem", { lineHeight: "1.5rem" }],
-        "clinical-base": ["1.0625rem", { lineHeight: "1.65rem" }],
-        "clinical-lg":   ["1.25rem",   { lineHeight: "1.85rem" }]
+        "clinical-sm":   ["1rem",      { lineHeight: "1.55rem" }],
+        "clinical-base": ["1.125rem",  { lineHeight: "1.7rem"  }],
+        "clinical-lg":   ["1.375rem",  { lineHeight: "1.95rem" }]
       },
       borderRadius: {
         clinical: "14px"

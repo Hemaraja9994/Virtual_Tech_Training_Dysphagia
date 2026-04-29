@@ -155,7 +155,7 @@ export default function App() {
           onSuccess={() => setSuccesses((c) => c + 1)}
         />
       }
-      stageMeta={running ? "Live · physics-driven orb" : "Standby — press Start to begin"}
+      stageMeta={running ? "Live · real-time biofeedback" : "Standby — press Start session to begin"}
       stageHeader={
         <span className="status-pill" data-state={running ? "ok" : "idle"}>
           <span className={`h-1.5 w-1.5 rounded-full ${running ? "bg-signal-ok animate-pulse-soft" : "bg-clinical-muted"}`} />

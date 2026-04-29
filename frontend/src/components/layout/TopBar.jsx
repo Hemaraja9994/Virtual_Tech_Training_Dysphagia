@@ -1,9 +1,12 @@
 import { Activity, Clock, ShieldCheck, User2 } from "lucide-react";
+import { useEffect, useState } from "react";
 
 /**
- * TopBar — fixed-height clinical header.
+ * TopBar — clinical-device front panel.
  *
- * Pure presentation: the Dashboard owns wiring to inputManager state.
+ * Three regions: brand + model strip (left), session meta + live clock
+ * (center), input source pills (right). Bigger fonts than the previous
+ * iteration to read well on a clinic monitor at arm's length.
  */
 export default function TopBar({
   participantId  = "—",
@@ -12,37 +15,41 @@ export default function TopBar({
   inputs = { semg: "idle", webcam: "idle", mic: "idle" }
 }) {
   return (
-    <header className="h-16 px-6 flex items-center justify-between bg-white/80 backdrop-blur border-b border-clinical-border sticky top-0 z-20">
-      {/* Brand */}
-      <div className="flex items-center gap-3">
+    <header className="h-20 px-6 flex items-center justify-between bg-white/85 backdrop-blur border-b border-clinical-border sticky top-0 z-20 shadow-clinical-sm">
+      {/* Brand + model */}
+      <div className="flex items-center gap-4">
         <div
-          className="h-9 w-9 rounded-xl bg-brand-600 text-white grid place-items-center shadow-clinical-sm"
+          className="h-12 w-12 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white grid place-items-center shadow-clinical-md"
           aria-hidden
         >
-          <Activity size={18} strokeWidth={2.4} />
+          <Activity size={22} strokeWidth={2.4} />
         </div>
         <div className="leading-tight">
-          <div className="text-[0.72rem] uppercase tracking-[0.18em] text-clinical-muted">
-            Dysphagia Rehab
+          <div className="text-xs uppercase tracking-[0.22em] text-clinical-muted font-semibold">
+            Dysphagia Rehab Suite
           </div>
-          <div className="text-[0.95rem] font-semibold text-clinical-ink">
-            Clinical Telemetry Console
+          <div className="text-xl font-semibold text-clinical-ink">
+            Live Swallow Trainer
+          </div>
+          <div className="text-[10px] uppercase tracking-[0.18em] text-clinical-muted font-mono">
+            Model DRX-1 · v0.2.0
           </div>
         </div>
       </div>
 
-      {/* Session metadata */}
-      <div className="hidden md:flex items-center gap-6">
-        <Meta icon={<User2 size={15} />} label="Participant">
-          <span className="font-mono tabular-nums">{participantId}</span>
+      {/* Session metadata + live clock */}
+      <div className="hidden md:flex items-center gap-7">
+        <Meta icon={<User2 size={17} />} label="Participant">
+          <span className="font-mono tabular-nums text-base">{participantId}</span>
         </Meta>
-        <Meta icon={<Clock size={15} />} label="Session">
-          <span className="font-mono tabular-nums">{sessionElapsed}</span>
+        <Meta icon={<Clock size={17} />} label="Session">
+          <span className="font-mono tabular-nums text-base">{sessionElapsed}</span>
           <SessionState state={sessionState} />
         </Meta>
-        <Meta icon={<ShieldCheck size={15} />} label="Privacy">
-          <span className="text-clinical-ink2">Local-only</span>
+        <Meta icon={<ShieldCheck size={17} />} label="Privacy">
+          <span className="text-clinical-ink2 text-base">Local-only</span>
         </Meta>
+        <LiveClock />
       </div>
 
       {/* Input source pills */}
@@ -57,7 +64,7 @@ export default function TopBar({
 
 function Meta({ icon, label, children }) {
   return (
-    <div className="flex items-center gap-2 text-sm">
+    <div className="flex items-center gap-2 text-base">
       <span className="text-clinical-muted">{icon}</span>
       <span className="text-clinical-muted">{label}:</span>
       <span className="text-clinical-ink font-medium flex items-center gap-2">{children}</span>
@@ -67,14 +74,14 @@ function Meta({ icon, label, children }) {
 
 function SessionState({ state }) {
   const map = {
-    idle:    { dot: "bg-clinical-muted",                     text: "Idle"   },
-    running: { dot: "bg-signal-ok animate-pulse-soft",       text: "Live"   },
-    paused:  { dot: "bg-signal-warn",                        text: "Paused" }
+    idle:    { dot: "bg-clinical-muted",               text: "Idle"   },
+    running: { dot: "bg-signal-ok animate-pulse-soft", text: "Live"   },
+    paused:  { dot: "bg-signal-warn",                  text: "Paused" }
   };
   const { dot, text } = map[state] ?? map.idle;
   return (
-    <span className="inline-flex items-center gap-1.5 text-xs text-clinical-ink2">
-      <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+    <span className="inline-flex items-center gap-1.5 text-sm text-clinical-ink2">
+      <span className={`h-2 w-2 rounded-full ${dot}`} />
       {text}
     </span>
   );
@@ -88,9 +95,28 @@ function InputPill({ label, state }) {
     idle:  "bg-clinical-muted"
   }[state];
   return (
-    <span className="status-pill" data-state={state}>
-      <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+    <span className="status-pill text-sm px-3 py-1.5" data-state={state}>
+      <span className={`h-2 w-2 rounded-full ${dot}`} />
       {label}
     </span>
+  );
+}
+
+function LiveClock() {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(id);
+  }, []);
+  const hh = String(now.getHours()).padStart(2, "0");
+  const mm = String(now.getMinutes()).padStart(2, "0");
+  const ss = String(now.getSeconds()).padStart(2, "0");
+  return (
+    <div className="leading-tight">
+      <div className="text-[10px] uppercase tracking-[0.2em] text-clinical-muted">Local time</div>
+      <div className="text-base font-mono tabular-nums text-clinical-ink">
+        {hh}:{mm}<span className="text-clinical-muted">:{ss}</span>
+      </div>
+    </div>
   );
 }
